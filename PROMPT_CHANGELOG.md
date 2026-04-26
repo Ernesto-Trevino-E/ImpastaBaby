@@ -43,6 +43,29 @@ When adding a new entry to this changelog:
 
 ---
 
+## [2026-04-25] - Bug fixes: snap.exists(), dead CSS, role toggle (Prompt 04)
+
+**Prompt:**
+```
+Cursor Prompt 04 — Bug Fixes (plan only)
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+```
+
+**Overview:**
+Fix Firestore v10 \`DocumentSnapshot\` usage: call \`snap.exists()\` (not the property) in \`attachLobbyListener\` \`onSnapshot\`, \`createLobbyInFirestore\` collision loop, and JOIN \`getDoc\` so missing docs and collisions are detected. Remove dead \`.devnav\` and \`.demo-controls\` CSS blocks. In \`renderRoleCard\`, remove the screen-4 HIDE \`goto(5/6)\` branch so REVEAL/HIDE only toggles \`state.revealed\` and re-renders; navigation to 5/6 stays on \`onLobbyUpdate\` when \`status\` is \`active\`.
+
+**Files Changed:**
+- `index.html` - \`exists()\` at three sites, CSS removals, \`renderRoleCard\` click handler
+- `PROMPT_CHANGELOG.md` - This entry
+
+**Additional Notes:**
+None.
+
+---
+
 ## [2026-04-25] - Screens 2-7: full game loop (Prompt 03)
 
 **Prompt:**
