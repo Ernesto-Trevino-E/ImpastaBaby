@@ -43,6 +43,29 @@ When adding a new entry to this changelog:
 
 ---
 
+## [2026-04-25] - Screens 2-7: full game loop (Prompt 03)
+
+**Prompt:**
+```
+Plan: Cursor Prompt 03 — Screens 2–7 (Full Game Loop)
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+```
+
+**Overview:**
+Complete Prompt 03: remove the fake 800ms delay and \`// SELECTING...\` UI from \`btn-start\`; start game only \`updateDoc\`s \`status\`, \`impostorId\`, and \`currentWord\` (no local \`goto\`). Extend \`onLobbyUpdate\` so \`status === 'active'\` and \`currentScreen === 7\` (post-reveal new round) sends all clients to screen 4, combined with the existing screens 2 and 3 to 4 rule. In \`renderRoleCard\`, when \`target === 4\` and the user taps HIDE after revealing (read role), call \`goto(5)\` or \`goto(6)\` from \`state.sessionId === state.lobby.hostId\` for client-only in-game navigation. Confirmed no \`PICK_WORDS\`/\`previewRole\`/\`postView\`; only animation/copy \`setTimeout\`s remain; script end is still \`goto(1)\` only.
+
+**Files Changed:**
+- `index.html` - \`onLobbyUpdate\` active+screen-7, start button, screen 4 HIDE to 5/6
+- `PROMPT_CHANGELOG.md` - This entry
+
+**Additional Notes:**
+None.
+
+---
+
 ## [2026-04-25] - Screen 1: module-scoped lobbyRef (Prompt 02)
 
 **Prompt:**

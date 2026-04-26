@@ -748,7 +748,7 @@ function onLobbyUpdate(data) {
   mergeLobbyFromServer(data);
   const cs = state.currentScreen;
   const st = state.lobby.status;
-  if (st === 'active' && (cs === 2 || cs === 3)) {
+  if (st === 'active' && (cs === 2 || cs === 3 || cs === 7)) {
     goto(4);
     return;
   }
@@ -1106,15 +1106,12 @@ document.getElementById('btn-start').addEventListener('click', async () => {
   const words = state.lobby.wordPot;
   const currentWord = words[Math.floor(Math.random() * words.length)];
   btn.disabled = true;
-  btn.innerHTML = '<span class="selecting">// SELECTING...</span>';
   try {
-    await new Promise((res) => setTimeout(res, 800));
     await updateDoc(r, { status: 'active', impostorId, currentWord });
   } catch (e) {
     console.error(e);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = 'START GAME';
   }
 });
 
@@ -1167,6 +1164,12 @@ function renderRoleCard(target) {
     }
   }
   document.getElementById('btn-reveal-' + target).addEventListener('click', () => {
+    if (target === 4 && state.revealed[target]) {
+      // After reading the role, HIDE → in-game; navigation is local only (onSnapshot does not go 4→5/6)
+      const isHost = state.sessionId === state.lobby.hostId;
+      goto(isHost ? 5 : 6);
+      return;
+    }
     state.revealed[target] = !state.revealed[target];
     renderRoleCard(target);
   });
