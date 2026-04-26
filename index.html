@@ -520,7 +520,15 @@
 
 <!-- ===== SCREEN 5 IN-GAME HOST ===== -->
 <section class="screen" id="screen-5">
-  <div class="panel marks">
+  <div class="role-card compact" id="role-card-5">
+    <div class="corner">RNG.0112</div>
+    <div class="role-label">// your role</div>
+    <div class="role-content" id="role-content-5">
+      <button class="btn btn-secondary reveal-btn" id="btn-reveal-5">REVEAL</button>
+    </div>
+  </div>
+
+  <div class="panel marks" style="margin-top:14px;">
     <div class="panel-eyebrow">// game in progress</div>
     <div class="round-row">
       <div class="num" id="round-num">ROUND 01</div>
@@ -677,7 +685,7 @@ const state = {
     round: 1,
     players: {},
   },
-  revealed: { 4: false, 6: false },
+  revealed: { 4: false, 5: false, 6: false },
   currentScreen: 1,
 };
 
@@ -741,7 +749,10 @@ function refreshCurrentScreen() {
   if (n === 2) renderHost();
   if (n === 3) renderPlayer();
   if (n === 4) renderRoleCard(4);
-  if (n === 5) renderHostGame();
+  if (n === 5) {
+    renderHostGame();
+    renderRoleCard(5);
+  }
   if (n === 6) renderRoleCard(6);
   if (n === 7) renderResult();
 }
@@ -792,7 +803,11 @@ function goto(n) {
     state.revealed[4] = false;
     renderRoleCard(4);
   }
-  if (n === 5) renderHostGame();
+  if (n === 5) {
+    state.revealed[5] = false;
+    renderHostGame();
+    renderRoleCard(5);
+  }
   if (n === 6) {
     state.revealed[6] = false;
     renderRoleCard(6);
@@ -1127,11 +1142,12 @@ function renderScreen4Continue() {
 }
 
 /* =================================================================
-   SCREEN 4 / 6 — ROLE CARD
+   SCREEN 4 / 5 / 6 — ROLE CARD
 ================================================================= */
 function renderRoleCard(target) {
   const card = document.getElementById('role-card-' + target);
   const content = document.getElementById('role-content-' + target);
+  if (!card || !content) return;
   const isImpostor = state.sessionId === state.lobby.impostorId;
   const isContentShown = state.revealed[target];
   card.classList.toggle('is-impostor', isImpostor && isContentShown);
@@ -1213,6 +1229,7 @@ async function newRound() {
   const impostorId = connectedIds[Math.floor(Math.random() * connectedIds.length)];
   const currentWord = words[Math.floor(Math.random() * words.length)];
   state.revealed[4] = false;
+  state.revealed[5] = false;
   state.revealed[6] = false;
   try {
     await updateDoc(r, {

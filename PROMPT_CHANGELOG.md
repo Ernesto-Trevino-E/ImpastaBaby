@@ -43,6 +43,31 @@ When adding a new entry to this changelog:
 
 ---
 
+## [2026-04-26] - Host in-game role card; host as full player
+
+**Prompt:**
+```
+So quick fix the title card says:
+
+// your role
+HOST
+// you moderate. you are not in play.
+
+but they should be in play, the host can also be selected as an impostor and is also taking part in the game so they are just like another player but have extra controls because they are the host. But they are also taking part in the game
+```
+
+**Overview:**
+Add a compact \`role-card\` to screen 5 (in-game host) mirroring screen 6: \`#role-card-5\` / \`#role-content-5\`, with spacing on the first panel below. Extend \`state.revealed\` with \`5\`, reset in \`goto(5)\` and \`newRound\`, and call \`renderRoleCard(5)\` from \`goto(5)\`, \`renderHostGame\` (via the same navigation path), and \`refreshCurrentScreen\` when on screen 5. \`renderRoleCard\` keeps a null check on card/content. An earlier pass showed host-only \`HOST\` / not-in-play copy and excluded \`hostId\` from the impostor pool in start/new round and tightened \`updateStartBtn\`; that was reverted so the host is a normal participant: \`impostorId\` is chosen from all connected clients (including the host), and \`updateStartBtn\` only requires the word pot minimum. Hosts now see the same IMPOSTOR or secret word reveal on screens 4, 5, and 6 as other players, plus host controls on screen 5.
+
+**Files Changed:**
+- `index.html` - Screen 5 role card markup, \`revealed[5]\`, \`goto\`/\`refreshCurrentScreen\`/\`newRound\`, \`renderRoleCard\` host-as-player behavior, start/new-round impostor selection, \`updateStartBtn\`
+- `PROMPT_CHANGELOG.md` - This entry
+
+**Additional Notes:**
+None.
+
+---
+
 ## [2026-04-26] - Host and player continue after role reveal
 
 **Prompt:**
