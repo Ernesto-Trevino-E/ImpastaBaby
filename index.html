@@ -502,13 +502,17 @@
 <!-- ===== SCREEN 4 ROLE REVEAL (full overlay) ===== -->
 <section class="screen" id="screen-4">
   <div class="role-overlay">
-    <div style="width:100%;max-width:380px;">
+    <div style="width:100%;max-width:380px;display:flex;flex-direction:column;align-items:stretch;gap:0;">
       <div class="role-card" id="role-card-4">
         <div class="corner">RNG.0112</div>
         <div class="role-label">// your role</div>
         <div class="role-content" id="role-content-4">
           <button class="btn btn-secondary reveal-btn" id="btn-reveal-4">REVEAL</button>
         </div>
+      </div>
+      <div id="screen-4-continue" style="margin-top:16px;text-align:center;">
+        <div class="muted xs" id="screen-4-continue-hint" style="margin-bottom:10px;letter-spacing:0.1em;">//</div>
+        <button type="button" class="btn btn-primary btn-block" id="btn-continue-round">CONTINUE</button>
       </div>
     </div>
   </div>
@@ -1103,6 +1107,25 @@ function renderPlayer() {
   renderPot('player');
 }
 
+function renderScreen4Continue() {
+  const wrap = document.getElementById('screen-4-continue');
+  const btn = document.getElementById('btn-continue-round');
+  const hint = document.getElementById('screen-4-continue-hint');
+  if (!wrap || !btn) return;
+  if (state.lobby.status !== 'active') {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  const isHost = state.sessionId === state.lobby.hostId;
+  btn.textContent = isHost ? 'CONTINUE TO HOST CONTROLS' : 'ENTER ROUND';
+  if (hint) {
+    hint.textContent = isHost
+      ? '// open the host board when you are ready'
+      : '// join the round when you are ready';
+  }
+}
+
 /* =================================================================
    SCREEN 4 / 6 — ROLE CARD
 ================================================================= */
@@ -1135,7 +1158,13 @@ function renderRoleCard(target) {
     state.revealed[target] = !state.revealed[target];
     renderRoleCard(target);
   });
+  if (target === 4) renderScreen4Continue();
 }
+
+document.getElementById('btn-continue-round').addEventListener('click', () => {
+  const isHost = state.sessionId === state.lobby.hostId;
+  goto(isHost ? 5 : 6);
+});
 
 /* =================================================================
    SCREEN 5 — IN-GAME HOST

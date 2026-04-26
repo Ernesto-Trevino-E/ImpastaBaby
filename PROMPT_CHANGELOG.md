@@ -43,6 +43,29 @@ When adding a new entry to this changelog:
 
 ---
 
+## [2026-04-26] - Host and player continue after role reveal
+
+**Prompt:**
+```
+Host (and player) continue after role reveal
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+```
+
+**Overview:**
+Screen 5 (host in-game) and screen 6 (player in-game) were unreachable: \`goto(5/6)\` was not invoked anywhere after earlier fixes removed the HIDE-to-5/6 path from \`renderRoleCard\`. Add a continue strip on screen 4: container \`#screen-4-continue\` with \`#btn-continue-round\` and hint text, placed below the role card and outside \`#role-content-4\` so reveal re-renders do not remove it. Implement \`renderScreen4Continue()\` to show the strip when \`state.lobby.status === 'active'\` and set host vs player button labels. Wire \`click\` to \`goto(5)\` for host and \`goto(6)\` for others. Call \`renderScreen4Continue()\` at the end of \`renderRoleCard\` when \`target === 4\` so \`goto(4)\` and \`refreshCurrentScreen\` keep the UI in sync. No new Firestore fields; navigation remains client-local.
+
+**Files Changed:**
+- `index.html` - Screen 4 continue markup, \`renderScreen4Continue\`, \`btn-continue-round\` handler, \`renderRoleCard(4)\` tail
+- `PROMPT_CHANGELOG.md` - This entry
+
+**Additional Notes:**
+None.
+
+---
+
 ## [2026-04-25] - Bug fixes: snap.exists(), dead CSS, role toggle (Prompt 04)
 
 **Prompt:**
