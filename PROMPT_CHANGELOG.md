@@ -43,6 +43,29 @@ When adding a new entry to this changelog:
 
 ---
 
+## [2026-04-25] - Screen 1: module-scoped lobbyRef (Prompt 02)
+
+**Prompt:**
+```
+Plan: Screen 1 — Create Lobby + Join Lobby (Prompt 02)
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+```
+
+**Overview:**
+Align Screen 1 + shared Firestore wiring with the Prompt 02 plan: add module-scoped \`lobbyRef\` (set in \`attachLobbyListener\` to \`doc(db, 'lobbies', code)\`, cleared in \`detachLobbyListener\` so unsubscribe + no stale ref before a new \`onSnapshot\`). \`getLobbyRef()\` returns \`lobbyRef\` for all \`updateDoc\` call sites. \`setConnected\` writes \`players.\${sessionId}.connected\` via \`lobbyRef\` and returns when \`lobbyRef\` is null. Create/join, \`onLobbyUpdate\` auto-nav + \`refreshCurrentScreen\`, and host impostor-disconnect reveal in the snapshot callback were already implemented; no Screen 2-7 event handler blocks were changed.
+
+**Files Changed:**
+- `index.html` - \`lobbyRef\` lifecycle, \`getLobbyRef\`, \`setConnected\`, \`detachLobbyListener\`, \`attachLobbyListener\`
+- `PROMPT_CHANGELOG.md` - This entry
+
+**Additional Notes:**
+None.
+
+---
+
 ## [2026-04-25] - Firebase init, session identity, and Firestore wiring
 
 **Prompt:**
@@ -55,7 +78,7 @@ To-do's from the plan have already been created. Do not create them again. Mark 
 ```
 
 **Overview:**
-Wire `index.html` to Firebase v10 (ESM CDN imports in a single `<script type="module">`), add `gstatic` preconnect in `<head>`, and use `sessionStorage` for `impostor_session_id` and `impostor_player_name` with `window.prompt` on first name entry (abort create/join on cancel). Remove dev nav, screens 4/6/7 preview demo markup, and local-only mock state; add `mergeLobbyFromServer`, `onSnapshot` on `lobbies/{code}` with `onLobbyUpdate` for spec auto-navigation, host-only impostor-disconnect reveal, and `setConnected` on `beforeunload`/`visibilitychange`. Implement Screen 1 create (randCode collision retry, `setDoc`) and join (`getDoc`, `updateDoc` for new player), then wire lobbies, word pot, start/reveal, back-to-lobby, and new round through Firestore. Role cards use `state.sessionId === state.lobby.impostorId`; result screen uses host vs player from `state.sessionId === state.lobby.hostId` (no `postView` toggles). Expose `goto`, `newRound`, and `backToLobby` on `window` for existing inline `onclick` handlers. No CSS or panel-layout edits beyond the listed HTML removals.
+Wire \`index.html\` to Firebase v10 ESM CDN imports in a single script type=module, add \`gstatic\` preconnect in \`head\`, and use \`sessionStorage\` for \`impostor_session_id\` and \`impostor_player_name\` with \`window.prompt\` on first name entry (abort create/join on cancel). Remove dev nav, screens 4/6/7 preview demo markup, and local-only mock state; add \`mergeLobbyFromServer\`, \`onSnapshot\` on \`lobbies/{code}\` with \`onLobbyUpdate\` for spec auto-navigation, host-only impostor-disconnect reveal, and \`setConnected\` on \`beforeunload\`/\`visibilitychange\`. Implement Screen 1 create (randCode collision retry, \`setDoc\`) and join (\`getDoc\`, \`updateDoc\` for new player), then wire lobbies, word pot, start/reveal, back-to-lobby, and new round through Firestore. Role cards use \`state.sessionId === state.lobby.impostorId\`; result screen uses host vs player from \`state.sessionId === state.lobby.hostId\` (no \`postView\` toggles). Expose \`goto\`, \`newRound\`, and \`backToLobby\` on \`window\` for existing inline \`onclick\` handlers. No CSS or panel-layout edits beyond the listed HTML removals.
 
 **Files Changed:**
 - `index.html` - Firebase ESM, Firestore CRUD and listeners, session identity, HTML removals (dev nav, demo controls)

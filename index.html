@@ -724,9 +724,11 @@ function mergeLobbyFromServer(data) {
   };
 }
 
+/** Set when create/join attaches the lobby listener; cleared in detach. */
+let lobbyRef = null;
+
 function getLobbyRef() {
-  if (!state.lobby?.code) return null;
-  return doc(db, 'lobbies', state.lobby.code);
+  return lobbyRef;
 }
 
 /* =================================================================
@@ -739,6 +741,7 @@ function detachLobbyListener() {
     unsubLobby();
     unsubLobby = null;
   }
+  lobbyRef = null;
 }
 
 function onLobbyUpdate(data) {
@@ -773,7 +776,7 @@ function refreshCurrentScreen() {
 
 function attachLobbyListener(lobbyCode) {
   detachLobbyListener();
-  const lobbyRef = doc(db, 'lobbies', lobbyCode);
+  lobbyRef = doc(db, 'lobbies', lobbyCode);
   unsubLobby = onSnapshot(lobbyRef, (snap) => {
     if (!snap.exists) return;
     const data = snap.data();
@@ -793,9 +796,8 @@ function attachLobbyListener(lobbyCode) {
    DISCONNECT / WINDOW
 ================================================================= */
 function setConnected(value) {
-  const r = getLobbyRef();
-  if (!r) return;
-  updateDoc(r, { [`players.${state.sessionId}.connected`]: value }).catch(() => {});
+  if (!lobbyRef) return;
+  updateDoc(lobbyRef, { [`players.${state.sessionId}.connected`]: value }).catch(() => {});
 }
 
 window.addEventListener('beforeunload', () => {
